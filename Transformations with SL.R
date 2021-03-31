@@ -1,0 +1,178 @@
+
+setwd("C:/Users/Lenovo/Desktop/Spring 2021/ECO 487 459/Data")
+library(AER)
+library(tidyverse)
+
+detach(data)
+data = read.csv("data.csv", sep = ",", header = T)
+attach(data)
+
+y = SL
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+x = HCI
+
+linear = lm(y ~ x, data = data)
+squared = lm(y ~ x + I(x^2), data = data)
+cubed = lm(y ~ x + I(x^2) + I(x^3), data = data)
+
+
+waldtest(squared, c("I(x^2)"), vcov = vcovHC(cubed, "HC1"))
+# Since p-value = 0.9257 > 0.05, Linear model is better
+
+waldtest(cubed, c("I(x^2)", "I(x^3)"), vcov = vcovHC(cubed, "HC1"))
+# Since p-value = 0.5442 > 0.05, Linear model is better
+
+p = ggplot(data, aes(x = x, y = y)) + geom_point()
+p + stat_smooth(method = "lm", formula = y ~ x, color = "red") + ggtitle("SL vs. Linear Transformation of HCI")
+p + stat_smooth(method = "lm", formula = y ~ log(x), color = "green") + ggtitle("SL vs. Log Transformation of HCI")
+
+# From graphs, we can conclude that the linear transformation is the best
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+x = HAQI
+
+linear = lm(y ~ x, data = data)
+squared = lm(y ~ x + I(x^2), data = data)
+cubed = lm(y ~ x + I(x^2) + I(x^3), data = data)
+
+
+waldtest(squared, c("I(x^2)"), vcov = vcovHC(cubed, "HC1"))
+# Since p-value = 0.8712 > 0.05, Linear model is better
+
+waldtest(cubed, c("I(x^2)", "I(x^3)"), vcov = vcovHC(cubed, "HC1"))
+# Since p-value = 0.03131 < 0.05, Cubic model is better
+
+p = ggplot(data, aes(x = x, y = y)) + geom_point()
+p + stat_smooth(method = "lm", formula = y ~ x + I(x^2) + I(x^3), color = "red") + ggtitle("SL vs. Cubic Transformation of HAQI")
+p + stat_smooth(method = "lm", formula = y ~ log(x), color = "green") + ggtitle("SL vs. Log Transformation of HAQI")
+
+# From graphs, we can conclude that the cubic transformation is the best
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+x = HYGIENE
+
+linear = lm(y ~ x, data = data)
+squared = lm(y ~ x + I(x^2), data = data)
+cubed = lm(y ~ x + I(x^2) + I(x^3), data = data)
+
+
+waldtest(squared, c("I(x^2)"), vcov = vcovHC(cubed, "HC1"))
+# Since p-value = 0.7547 > 0.05, Linear model is better
+
+waldtest(cubed, c("I(x^2)", "I(x^3)"), vcov = vcovHC(cubed, "HC1"))
+# Since p-value = 0.2031 > 0.05, Linear model is better
+
+p = ggplot(data, aes(x = x, y = y)) + geom_point()
+p + stat_smooth(method = "lm", formula = y ~ x, color = "red") + ggtitle("SL vs. Linear Transformation of HYGIENE")
+p + stat_smooth(method = "lm", formula = y ~ log(x), color = "green") + ggtitle("SL vs. Log Transformation of HYGIENE")
+
+# From graphs, we can conclude that the linear transformation is the best
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+x = MEAT
+
+linear = lm(y ~ x, data = data)
+squared = lm(y ~ x + I(x^2), data = data)
+cubed = lm(y ~ x + I(x^2) + I(x^3), data = data)
+
+
+waldtest(squared, c("I(x^2)"), vcov = vcovHC(cubed, "HC1"))
+# Since p-value = 0.7699 > 0.05, Linear model is better
+
+waldtest(cubed, c("I(x^2)", "I(x^3)"), vcov = vcovHC(cubed, "HC1"))
+# Since p-value = 5.765e-05 < 0.05, Cubic model is better
+
+p = ggplot(data, aes(x = x, y = y)) + geom_point()
+p + stat_smooth(method = "lm", formula = y ~ x + I(x^2) + I(x^3), color = "red") + ggtitle("SL vs. Cubic Transformation of MEAT")
+p + stat_smooth(method = "lm", formula = y ~ log(x), color = "green") + ggtitle("SL vs. Log Transformation of MEAT")
+
+# From graphs, we can conclude that the cubic transformation is the best
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+x = PD
+
+linear = lm(y ~ x, data = data)
+squared = lm(y ~ x + I(x^2), data = data)
+cubed = lm(y ~ x + I(x^2) + I(x^3), data = data)
+
+
+waldtest(squared, c("I(x^2)"), vcov = vcovHC(cubed, "HC1"))
+# Since p-value = 0.6792 > 0.05, Linear model is better
+
+waldtest(cubed, c("I(x^2)", "I(x^3)"), vcov = vcovHC(cubed, "HC1"))
+# Since p-value = 9.376e-08 < 0.05, Cubic model is better
+
+p = ggplot(data, aes(x = x, y = y)) + geom_point()
+p + stat_smooth(method = "lm", formula = y ~ x + I(x^2) + I(x^3), color = "red") + ggtitle("SL vs. Cubic Transformation of PD")
+p + stat_smooth(method = "lm", formula = y ~ log(x), color = "green") + ggtitle("SL vs. Log Transformation of PD")
+
+# From graphs, we can conclude that the cubic transformation is the best
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+x = SANITATION
+
+linear = lm(y ~ x, data = data)
+squared = lm(y ~ x + I(x^2), data = data)
+cubed = lm(y ~ x + I(x^2) + I(x^3), data = data)
+
+
+waldtest(squared, c("I(x^2)"), vcov = vcovHC(cubed, "HC1"))
+# Since p-value = 0.7434 > 0.05, Linear model is better
+
+waldtest(cubed, c("I(x^2)", "I(x^3)"), vcov = vcovHC(cubed, "HC1"))
+# Since p-value = 0.01197 < 0.05, Cubic model is better
+
+p = ggplot(data, aes(x = x, y = y)) + geom_point()
+p + stat_smooth(method = "lm", formula = y ~ x + I(x^2) + I(x^3), color = "red") + ggtitle("SL vs. Cubic Transformation of SANITATION")
+p + stat_smooth(method = "lm", formula = y ~ log(x), color = "green") + ggtitle("SL vs. Log Transformation of SANITATION")
+
+# From graphs, we can conclude that the cubic transformation is the best
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+x = CASES
+
+linear = lm(y ~ x, data = data)
+squared = lm(y ~ x + I(x^2), data = data)
+cubed = lm(y ~ x + I(x^2) + I(x^3), data = data)
+
+
+waldtest(squared, c("I(x^2)"), vcov = vcovHC(cubed, "HC1"))
+# Since p-value = 0.8093 > 0.05, Linear model is better
+
+waldtest(cubed, c("I(x^2)", "I(x^3)"), vcov = vcovHC(cubed, "HC1"))
+# Since p-value = 0.0006042 < 0.05, Cubic model is better
+
+# Since CASES takes value of 0, we can not have a log transformation.
+
+# Hence, we can conclude that the cubic transformation is the best
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+x = WATER
+
+linear = lm(y ~ x, data = data)
+squared = lm(y ~ x + I(x^2), data = data)
+cubed = lm(y ~ x + I(x^2) + I(x^3), data = data)
+
+
+waldtest(squared, c("I(x^2)"), vcov = vcovHC(cubed, "HC1"))
+# Since p-value = 0.7119 > 0.05, Linear model is better
+
+waldtest(cubed, c("I(x^2)", "I(x^3)"), vcov = vcovHC(cubed, "HC1"))
+# Since p-value = 3.348e-06 < 0.05, Cubic model is better
+
+p = ggplot(data, aes(x = x, y = y)) + geom_point()
+p + stat_smooth(method = "lm", formula = y ~ x + I(x^2) + I(x^3), color = "red") + ggtitle("SL vs. Cubic Transformation of WATER")
+p + stat_smooth(method = "lm", formula = y ~ log(x), color = "green") + ggtitle("SL vs. Log Transformation of WATER")
+
+# From graphs, we can conclude that the cubic transformation is the best
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+detach(data)
