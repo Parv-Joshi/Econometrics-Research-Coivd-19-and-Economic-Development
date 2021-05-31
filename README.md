@@ -9,7 +9,7 @@ My Research focused on two research questions:
 1. To find the direct dependence of the hygiene service industry on the standard of living of a country.
 
 The dataset contains nine variables with 70 observations (country wise). The variables are:
----------------------------------------------------------------------------------------------------------------------------------
+
 | CASES		   | Average number of new coronavirus positive cases for a country, on a seven-day rolling basis as of March 1, 2021 |
 | HCI		     | Human Capital Index: Average levels of education and health of an individual in a country                        |
 | MEAT		   | Meat consumption per capita of a country                                                                         |
@@ -19,7 +19,6 @@ The dataset contains nine variables with 70 observations (country wise). The var
 | WATER		   | Percentage of the population who has access to safe water for drinking                                           |
 | SL		     | Standard of Living: GDP per capita, PPP adjusted, for current U.S. Dollars                                       |
 | HAQI		   | Health Access and Quality Index: It measures the quality and accessibility of the healthcare institutions        |
-----------------------------------------------------------------------------------------------------------------------------------
 
 The data was complied from the databases of four sources: *The World Bank*, *UNICEF*, *Master Covid-19 Dataset*, and *Our World in Data*.
 
