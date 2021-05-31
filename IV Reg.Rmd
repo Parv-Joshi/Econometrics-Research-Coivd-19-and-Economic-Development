@@ -1,0 +1,73 @@
+---
+title: "IV Rreg"
+author: 'Parv Joshi, ID: 112169570'
+date: "5/6/2021"
+output: word_document
+---
+
+```{r, warning=F, message=F}
+setwd("C:/Users/Lenovo/Desktop/Spring 2021/ECO 487 459/Data")
+
+library(tidyverse)
+library(AER)
+library(sandwich)
+library(lmtest)
+library(car)
+library(MASS)
+library(stargazer)
+
+data = read.csv("data.csv", sep = ",", header = T)
+attach(data)
+```
+
+```{r}
+iv_1 = ivreg(CASES ~ HYGIENE + SANITATION + I(SANITATION^2) +
+               I(SANITATION^3) + WATER + I(WATER^2) + I(WATER^3) +
+               PD + MEAT*PD + MEAT*HAQI + PD*HYGIENE +
+               PD*SANITATION + PD*HAQI + WATER*SL | HCI + HAQI + MEAT +
+               PD + I(log(SL)) + SANITATION + I(SANITATION^2) + MEAT*PD + 
+               MEAT*HAQI + PD*HYGIENE + WATER + I(WATER^2) + PD*SANITATION +
+               PD*HAQI + WATER*SL, data = data)
+summary(iv_1, vcov = sandwich, df = Inf)
+
+iv_2 = ivreg(SL ~ HAQI + I(HAQI^2) + I(HAQI^3) + HYGIENE + SANITATION + I(SANITATION^2) +
+               I(SANITATION^3) + WATER + I(WATER^2) + I(WATER^3) + CASES*HYGIENE +
+               MEAT*SANITATION + HYGIENE*SANITATION | + MEAT + I(MEAT^2) + I(MEAT^3) +
+               I(PD^2) + I(PD^3) + SANITATION + I(SANITATION^2) + HAQI +
+               I(HAQI^2) + I(HAQI^3) + WATER + I(WATER^2) + + CASES*HYGIENE +
+               MEAT*SANITATION + HYGIENE*SANITATION , data = data)
+summary(iv_2, vcov = sandwich, df = Inf)
+```
+
+# Model 1
+```{r}
+summary(lm(HYGIENE ~ HCI + HAQI + MEAT +
+             PD + I(log(SL)) + SANITATION + I(SANITATION^2) + MEAT*PD + 
+             MEAT*HAQI + PD*HYGIENE + WATER + I(WATER^2) + PD*SANITATION +
+             PD*HAQI + WATER*SL, data = data))
+summary(lm(I(SANITATION^3) ~ HCI + HAQI + MEAT +
+             PD + I(log(SL)) + SANITATION + I(SANITATION^2) + MEAT*PD + 
+             MEAT*HAQI + PD*HYGIENE + WATER + I(WATER^2) + PD*SANITATION +
+             PD*HAQI + WATER*SL, data = data))
+summary(lm(I(WATER^3) ~ HCI + HAQI + MEAT +
+             PD + I(log(SL)) + SANITATION + I(SANITATION^2) + MEAT*PD + 
+             MEAT*HAQI + PD*HYGIENE + WATER + I(WATER^2) + PD*SANITATION +
+             PD*HAQI + WATER*SL, data = data))
+```
+
+# Model 2
+```{r}
+summary(lm(HYGIENE ~ MEAT + I(MEAT^2) + I(MEAT^3) +
+             I(PD^2) + I(PD^3) + SANITATION + I(SANITATION^2) + HAQI +
+             I(HAQI^2) + I(HAQI^3) + WATER + I(WATER^2) + + CASES*HYGIENE +
+             MEAT*SANITATION + HYGIENE*SANITATION + PD + HCI, data = data))
+summary(lm(I(SANITATION^3) ~ MEAT + I(MEAT^2) + I(MEAT^3) +
+             I(PD^2) + I(PD^3) + SANITATION + I(SANITATION^2) + HAQI +
+             I(HAQI^2) + I(HAQI^3) + WATER + I(WATER^2) + + CASES*HYGIENE +
+             MEAT*SANITATION + HYGIENE*SANITATION + PD + HCI, data = data))
+summary(lm(I(WATER^3) ~ MEAT + I(MEAT^2) + I(MEAT^3) +
+             I(PD^2) + I(PD^3) + SANITATION + I(SANITATION^2) + HAQI +
+             I(HAQI^2) + I(HAQI^3) + WATER + I(WATER^2) + + CASES*HYGIENE +
+             MEAT*SANITATION + HYGIENE*SANITATION + PD + HCI, data = data))
+```
+

@@ -1,0 +1,101 @@
+---
+title: "Equation 2"
+author: 'Parv Joshi, ID: 112169570'
+date: "4/19/2021"
+output: word_document
+---
+
+```{r}
+setwd("C:/Users/Lenovo/Desktop/Spring 2021/ECO 487 459/Data")
+
+library(tidyverse)
+library(AER)
+library(sandwich)
+library(lmtest)
+library(car)
+library(MASS)
+
+data = read.csv("data.csv", sep = ",", header = T)
+attach(data)
+```
+
+```{r}
+# Equation 2 Models
+
+Model2 = lm(SL ~ ., data = data)
+summary(Model2)$adj.r.squared
+
+Model2 = lm(I(log(SL)) ~ ., data = data)
+summary(Model2)$adj.r.squared
+
+Model2 = lm(SL ~ (.)^2, data = data)
+summary(Model2)$adj.r.squared
+
+Model2 = lm(I(log(SL)) ~ (.)^2, data = data)
+summary(Model2)$adj.r.squared
+
+Model2 = lm(SL ~ (.)^2 + I(HAQI^2) + I(HAQI^3) + I(MEAT^2)+ I(MEAT^3) + I(PD^2) + I(PD^3) + I(SANITATION^2) + I(SANITATION^3) + I(WATER^2) + I(WATER^3), data = data)
+summary(Model2)$adj.r.squared
+
+Model2 = lm(I(log(SL)) ~ (.)^2 + I(HAQI^2) + I(HAQI^3) + I(MEAT^2)+ I(MEAT^3) + I(PD^2) + I(PD^3) + I(SANITATION^2) + I(SANITATION^3) + I(WATER^2) + I(WATER^3), data = data)
+summary(Model2)$adj.r.squared
+
+# This One
+Model2 = lm(SL ~ HCI + HAQI + I(HAQI^2) + I(HAQI^3) + HYGIENE + MEAT + I(MEAT^2) + I(MEAT^3) + PD + I(PD^2) + I(PD^3) + SANITATION + I(SANITATION^2) + I(SANITATION^3) + WATER + I(WATER^2) + I(WATER^3) + CASES*HYGIENE + MEAT*SANITATION + HYGIENE*SANITATION, data = data)
+summary(Model2)$adj.r.squared
+
+Model2 = lm(I(log(SL)) ~ HCI + HAQI + I(HAQI^2) + I(HAQI^3) + HYGIENE + MEAT + I(MEAT^2) + I(MEAT^3) + PD + I(PD^2) + I(PD^3) + SANITATION + I(SANITATION^2) + I(SANITATION^3) + WATER + I(WATER^2) + I(WATER^3) + CASES*HYGIENE + MEAT*SANITATION + HYGIENE*SANITATION, data = data)
+summary(Model2)$adj.r.squared
+
+Model2 = lm(SL ~ (HCI + HAQI + I(HAQI^2) + I(HAQI^3) + HYGIENE + MEAT + I(MEAT^2) + I(MEAT^3) + PD + I(PD^2) + I(PD^3) + SANITATION + I(SANITATION^2) + I(SANITATION^3) + WATER + I(WATER^2) + I(WATER^3)), data = data)
+summary(Model2)$adj.r.squared
+
+Model2 = lm(I(log(SL)) ~ (HCI + HAQI + I(HAQI^2) + I(HAQI^3) + HYGIENE + MEAT + I(MEAT^2) + I(MEAT^3) + PD + I(PD^2) + I(PD^3) + SANITATION + I(SANITATION^2) + I(SANITATION^3) + WATER + I(WATER^2) + I(WATER^3)), data = data)
+summary(Model2)$adj.r.squared
+
+# --------------------------
+
+Model = lm(SL ~ HCI + HAQI + I(HAQI^2) + I(HAQI^3) + HYGIENE + MEAT + I(MEAT^2) + I(MEAT^3) + PD + I(PD^2) + I(PD^3) + SANITATION + I(SANITATION^2) + I(SANITATION^3) + WATER + I(WATER^2) + I(WATER^3) + CASES*HYGIENE + MEAT*SANITATION + HYGIENE*SANITATION, data = data)
+bc = boxcox(Model, lambda = seq(-3,3))
+lam = bc$x[which(bc$y==max(bc$y))]
+lam
+
+Model_bc = lm(I(SL^lam) ~ HCI + HAQI + I(HAQI^2) + I(HAQI^3) + HYGIENE + MEAT + I(MEAT^2) + I(MEAT^3) + PD + I(PD^2) + I(PD^3) + SANITATION + I(SANITATION^2) + I(SANITATION^3) + WATER + I(WATER^2) + I(WATER^3) + CASES*HYGIENE + MEAT*SANITATION + HYGIENE*SANITATION, data = data)
+summary(Model_bc)$adj.r.squared
+# The boxcox transformation worsens our model's fit. Hence, we must not use it.
+
+FinalModel2_1 = lm(SL ~ HCI + HAQI + I(HAQI^2) + I(HAQI^3) + HYGIENE + MEAT + I(MEAT^2) + I(MEAT^3) + PD + I(PD^2) + I(PD^3) + SANITATION + I(SANITATION^2) + I(SANITATION^3) + WATER + I(WATER^2) + I(WATER^3) + CASES*HYGIENE + MEAT*SANITATION + HYGIENE*SANITATION, data = data)
+summary(FinalModel2_1)
+hetero_FinalModel2_1 = coeftest(FinalModel2_1, vcov = vcovHC(FinalModel2_1, "HC1"))
+hetero_FinalModel2_1
+
+# We saw from our hetero_FinalModel2 that HCI doesn't affect SL but I(HAQI^3) does. Hence, Our equation 2.3 becomes void since it does not satisfy the first-stage regression. However, our equation 2.4 is still relevant.
+# Also, we know that WATER, SANITATION and HYGIENE were possibly correlated to only the variables we selected in Model 2. Hence, we can cay that the correlation of WATER, SANITATION and HYGIENE with the error term is negligible.
+
+# Let us now perform second-stage regressions for WATER, SANITATION and HYGIENE
+model_iv_s = lm(I(HAQI^3) ~ SANITATION + I(SANITATION^2) + I(SANITATION^3), data = data)
+summary(model_iv_s)
+hetero_model_iv_s = coeftest(model_iv_s, vcov = vcovHC(model_iv_s, "HC1"))
+hetero_model_iv_s
+
+model_iv_w = lm(I(HAQI^3) ~  WATER + I(WATER^2) + I(WATER^3), data = data)
+summary(model_iv_w)
+hetero_model_iv_w = coeftest(model_iv_w, vcov = vcovHC(model_iv_w, "HC1"))
+hetero_model_iv_w
+
+model_iv_h = lm(I(HAQI^3) ~ HYGIENE, data = data)
+summary(model_iv_h)
+hetero_model_iv_h = coeftest(model_iv_h, vcov = vcovHC(model_iv_h, "HC1"))
+hetero_model_iv_h
+
+# Since WATER and HYGIENE are significant to I(HAQI^lam_1) in second-stage regressions, we can now perform instrumental variable regression
+
+# IV Regression
+ivreg_model_1 = ivreg(SL ~ I(HAQI^3) | I(WATER^3) + HCI + MEAT + I(MEAT^2) + I(MEAT^3) + PD + I(PD^2) + I(PD^3) + CASES + I(CASES^2) + I(CASES^3), data = data)
+summary(ivreg_model_1, vcov = sandwich, df = Inf)
+
+ivreg_model_2 = ivreg(SL ~ I(HAQI^3) | HYGIENE +  HCI + MEAT + I(MEAT^2) + I(MEAT^3) + PD + I(PD^2) + I(PD^3) + CASES + I(CASES^2) + I(CASES^3), data = data)
+summary(ivreg_model_2, vcov = sandwich, df = Inf)
+
+```
+
